@@ -1,5 +1,9 @@
 # QuantumGS
 
+<p align="center">
+  <a href="https://gwilczynski95.github.io/quantum_gs/"><img src="https://img.shields.io/badge/🌐-Project%20Page-blue" alt="Project Page"></a>
+</p>
+
 This repository contains the implementation for the paper **QuantumGS** [Paper Link Placeholder].
 
 ### Abstract
