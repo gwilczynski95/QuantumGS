@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>QuantumGS: Quantum Encoding Framework for Gaussian Splatting</title>
+  <meta name="description"
+    content="QuantumGS integrates Variational Quantum Circuits into 3D Gaussian Splatting for enhanced view-dependent rendering.">
+  <meta name="keywords" content="QuantumGS, 3D Gaussian Splatting, Quantum Machine Learning, Neural Rendering">
+  <meta name="author" content="Firstname1 Lastname1, Firstname2 Lastname2, ...">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="static/js/index.js"></script>
+  <style>
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table.academic-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Times New Roman', Times, serif;
+      /* Match typical paper font for tables */
+    }
+
+    table.academic-table thead {
+      border-top: 2px solid black;
+      border-bottom: 1px solid black;
+    }
+
+    table.academic-table tbody {
+      border-bottom: 2px solid black;
+    }
+
+    table.academic-table th,
+    table.academic-table td {
+      padding: 8px 12px;
+      text-align: center;
+      border-left: none;
+      border-right: none;
+    }
+
+    table.academic-table th {
+      font-weight: bold;
+    }
+
+    /* Vertical alignment for joined cells */
+    table.academic-table td[rowspan] {
+      vertical-align: middle;
+    }
+
+    .highlight-row {
+      background-color: #ffe0e0;
+      /* Light red/pink for 'best' like in paper defs? Or just slight highlight */
+    }
+
+    /* Cell colors from paper */
+    .cell-best {
+      background-color: rgb(255, 180, 180);
+    }
+
+    .cell-second {
+      background-color: rgb(255, 210, 170);
+    }
+
+    .cell-third {
+      background-color: rgb(255, 245, 180);
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">QuantumGS: Quantum Encoding Framework for Gaussian Splatting</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Grzegorz Wilczyński<sup>1,2</sup>,</span>
+              <span class="author-block">Rafał Tobiasz<sup>1,2</sup>,</span>
+              <span class="author-block">Paweł Gora<sup>3</sup></span>
+              <span class="author-block">Marcin Mazur<sup>1</sup></span>
+              <span class="author-block">Przemysław Spurek<sup>1,2</sup></span>
+              <!-- Add other authors similarly -->
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup> Jagiellonian University</span>
+              <span class="author-block"><sup>2</sup> IDEAS Reserch Institue</span>
+              <span class="author-block"><sup>3</sup> University of Warsaw</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a class="external-link button is-normal is-rounded is-dark is-static">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://github.com/gwilczynski95/QuantumGS"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teaser -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <img src="static/images/teaser.png" alt="Teaser Image" style="width:100%;">
+        <h2 class="subtitle has-text-centered">
+          Top: Truck scene from Tanks and Temples demonstrates complex transparency. Standard 3DGS blurs the poster
+          behind the windshield due to low-frequency spherical harmonics. QuantumGS preserves high-frequency
+          view-dependence, recovering background visibility. Bottom: Directional color response of a single Gaussian.
+          Unlike smooth SH patterns (middle), Bloch-sphere encoding (right) learns complex, irregular responses (e.g.,
+          central dark lobe), enabling precise light transmission modeling.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Recent advances in neural rendering, particularly 3D Gaussian Splatting (3DGS), have enabled real-time
+              rendering of complex scenes. However, standard 3DGS relies on spherical harmonics, which often struggle to
+              accurately capture high-frequency view-dependent effects such as sharp reflections and transparency. While
+              hybrid approaches like Viewing Direction Gaussian Splatting (VDGS) mitigate this limitation using
+              classical Multi-Layer Perceptrons (MLPs), they remain limited by the expressivity of classical networks in
+              low-parameter regimes. In this paper, we introduce QuantumGS, a novel hybrid framework that integrates
+              Variational Quantum Circuits (VQC) into the Gaussian Splatting pipeline. We propose a unique encoding
+              strategy that maps the viewing direction directly onto the Bloch sphere, leveraging the natural geometry
+              of qubits to represent 3D directional data. By replacing classical color-modulating networks with quantum
+              circuits generated via a hypernetwork or conditioning mechanism, we achieve higher expressivity and better
+              generalization.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Method -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Method</h2>
+          <img src="static/images/method.png" alt="Method Overview" style="width:100%;">
+          <div class="content has-text-justified">
+            <p>
+              Our framework integrates quantum processing into 3D Gaussian Splatting for view-dependent color and
+              opacity residuals. Top: Two interchangeable pipelines. Pipeline I (Hyper-Quantum) generates per-Gaussian
+              VQC parameters via hypernetwork from spatial hash encoding. Pipeline II (Joint-Hash Global) feeds spatial
+              and directional hash features to a shared quantum network. Bottom: Hybrid QMLP maps viewing directions to
+              Bloch sphere via rotation gates (Ry, Rz), processes through VQC with circular entanglement, and decodes
+              measurements via classical MLP to guide rendering.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tables -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Quantitative Results</h2>
+
+      <div class="columns is-centered">
+        <div class="column">
+          <h3 class="title is-4">NeRF Synthetic Dataset</h3>
+          <div class="table-container">
+            <table class="academic-table">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Method</th>
+                  <th>PSNR &uarr;</th>
+                  <th>SSIM &uarr;</th>
+                  <th>LPIPS &darr;</th>
+                  <th>FPS &uarr;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="text-align: left;">NeRF</td>
+                  <td>31.01</td>
+                  <td>0.947</td>
+                  <td>0.081</td>
+                  <td>0.023</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">VolSDF</td>
+                  <td>27.96</td>
+                  <td>0.932</td>
+                  <td>0.096</td>
+                  <td>---</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">Ref-NeRF</td>
+                  <td>31.29</td>
+                  <td>0.947</td>
+                  <td>0.058</td>
+                  <td>---</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">ENVIDR</td>
+                  <td>28.13</td>
+                  <td>0.956</td>
+                  <td>0.067</td>
+                  <td>---</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">QRF</td>
+                  <td>32.65</td>
+                  <td class="cell-third">0.960</td>
+                  <td class="cell-best">0.029</td>
+                  <td>47.26</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">GS</td>
+                  <td class="cell-third">33.30</td>
+                  <td class="cell-second">0.969</td>
+                  <td class="cell-second">0.030</td>
+                  <td>733.00</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">VDGS</td>
+                  <td class="cell-second">33.37</td>
+                  <td class="cell-second">0.969</td>
+                  <td class="cell-third">0.032</td>
+                  <td>284.29</td>
+                </tr>
+                <tr style="font-weight:bold;">
+                  <td style="text-align: left;">QuantumGS (Ours)</td>
+                  <td class="cell-best">33.98</td>
+                  <td class="cell-best">0.970</td>
+                  <td class="cell-second">0.030</td>
+                  <td>12.64</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="column">
+          <h3 class="title is-4">Large-Scale Scenes (Mip-NeRF 360, Deep Blending, Tanks & Temples)</h3>
+          <div class="table-container">
+            <table class="academic-table">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Dataset</th>
+                  <th style="text-align: left;">Method</th>
+                  <th>PSNR &uarr;</th>
+                  <th>SSIM &uarr;</th>
+                  <th>LPIPS &darr;</th>
+                  <th>FPS &uarr;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Mip-NeRF 360 -->
+                <tr>
+                  <td rowspan="4" style="text-align: left;">Mip-NeRF 360</td>
+                  <td style="text-align: left;">MiPNeRF360</td>
+                  <td class="cell-best">27.69</td>
+                  <td>0.792</td>
+                  <td class="cell-third">0.237</td>
+                  <td>0.06</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">GS-30K</td>
+                  <td>27.21</td>
+                  <td class="cell-best">0.815</td>
+                  <td class="cell-best">0.214</td>
+                  <td>134</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">VDGS</td>
+                  <td class="cell-second">27.64</td>
+                  <td class="cell-second">0.813</td>
+                  <td class="cell-second">0.220</td>
+                  <td>41.35</td>
+                </tr>
+                <tr style="font-weight:bold;">
+                  <td style="text-align: left;">QuantumGS</td>
+                  <td class="cell-third">27.27</td>
+                  <td class="cell-third">0.793</td>
+                  <td>0.244</td>
+                  <td>10.78</td>
+                </tr>
+
+                <!-- Deep Blending -->
+                <tr style="border-top: 1px solid #ccc;">
+                  <td rowspan="4" style="text-align: left;">Deep Blending</td>
+                  <td style="text-align: left;">MiPNeRF360</td>
+                  <td>29.40</td>
+                  <td>0.901</td>
+                  <td class="cell-third">0.245</td>
+                  <td>0.09</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">GS-30K</td>
+                  <td class="cell-third">29.41</td>
+                  <td class="cell-third">0.903</td>
+                  <td class="cell-second">0.243</td>
+                  <td>137</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">VDGS</td>
+                  <td class="cell-second">29.54</td>
+                  <td class="cell-second">0.906</td>
+                  <td class="cell-second">0.243</td>
+                  <td>44.72</td>
+                </tr>
+                <tr style="font-weight:bold;">
+                  <td style="text-align: left;">QuantumGS</td>
+                  <td class="cell-best">30.15</td>
+                  <td class="cell-best">0.916</td>
+                  <td class="cell-best">0.163</td>
+                  <td>10.76</td>
+                </tr>
+
+                <!-- Tanks -->
+                <tr style="border-top: 1px solid #ccc;">
+                  <td rowspan="4" style="text-align: left;">Tanks & Temples</td>
+                  <td style="text-align: left;">MiPNeRF360</td>
+                  <td>22.22</td>
+                  <td>0.759</td>
+                  <td>0.257</td>
+                  <td>0.14</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">GS-30K</td>
+                  <td class="cell-third">23.14</td>
+                  <td class="cell-third">0.841</td>
+                  <td class="cell-third">0.183</td>
+                  <td>154</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left;">VDGS</td>
+                  <td class="cell-second">24.02</td>
+                  <td class="cell-second">0.851</td>
+                  <td class="cell-second">0.176</td>
+                  <td>28.53</td>
+                </tr>
+                <tr style="font-weight:bold;">
+                  <td style="text-align: left;">QuantumGS</td>
+                  <td class="cell-best">24.70</td>
+                  <td class="cell-best">0.888</td>
+                  <td class="cell-best">0.118</td>
+                  <td>16.15</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Qualitative Comparisons -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Qualitative Comparisons</h2>
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h3 class="title is-4">Synthetic Scenes</h3>
+          <img src="static/images/comparison_synthetic_zoom.png" alt="Synthetic Comparisons"
+            style="width:100%; margin-bottom: 20px;">
+          <p class="content has-text-justified">
+            Object-centric scenes. In the Drums scene, VDGS blurs the reflection on the drum surface, losing the
+            geometric definition. QuantumGS preserves the distinct shape. In the LEGO scene, VDGS exhibits floater
+            artifacts near the roof. QuantumGS recovers occlusion shadows on the chassis.
+          </p>
+        </div>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h3 class="title is-4">Real-World Scenes</h3>
+          <img src="static/images/comparison_m_1.png" alt="Real World Comparisons"
+            style="width:100%; margin-bottom: 20px;">
+          <p class="content has-text-justified">
+            Comparisons on real-world datasets. In the Truck scene (Tanks and Temples), standard 3DGS fails to capture
+            high-frequency reflections on the windshield. QuantumGS recovers sharp specular details. In the Kitchen
+            scene (Mip-NeRF 360), standard 3DGS renders the LEGO truck with unnatural foggy appearance. QuantumGS
+            produces clear boundaries.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BibTeX -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{QuantumGS2025,
+  title={QuantumGS: Quantum Encoding Framework for Gaussian Splatting},
+  author={Firstname1 Lastname1 and Firstname2 Lastname2 and ...},
+  journal={arXiv preprint arXiv:2502.XXXXX},
+  year={2025}
+}</code></pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content has-text-centered">
+            <p>
+              This page was built using the <a
+                href="https://github.com/eliahuhorwitz/Academic-project-page-template">Academic Project Page
+                Template</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
