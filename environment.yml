@@ -1,0 +1,24 @@
+name: quantum_gs
+channels:
+  - pytorch
+  - nvidia/label/cuda-11.8.1
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - cuda-toolkit=11.8
+  - pip
+  - pip:
+    - --extra-index-url https://download.pytorch.org/whl/cu118
+    - torch==2.5.1
+    - torchvision==0.20.1
+    - torchmetrics==1.7.1
+    - numpy==2.0.1
+    - tqdm==4.67.1
+    - plyfile==1.1
+    - scikit-image==0.25.2
+    - opencv-python-headless==4.10.0.84
+    - tensorboard==2.19.0
+    - wandb==0.19.9
+    - pillow==11.1.0
