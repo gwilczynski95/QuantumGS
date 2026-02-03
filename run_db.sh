@@ -6,7 +6,7 @@
 # DECLARE ARRAYS
 declare -a dsets_arr=("drjohnson" "playroom")
 # Corresponding resolutions for each dataset
-declare -a resolution_arr=(2 2)
+declare -a resolution_arr=(1 1)
 
 # FIXED HYPERPARAMETERS
 enc_biggest_mlp_dim=128
