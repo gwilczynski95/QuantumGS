@@ -1,6 +1,11 @@
 # QuantumGS
 
-This repository contains the implementation for the paper [**QuantumGS**](https://arxiv.org/abs/2602.05047).
+<p align="center">
+  <a href="https://arxiv.org/abs/2602.05047"><img src="https://img.shields.io/badge/arXiv-2602.05047-b31b1b.svg" alt="arXiv"></a>
+  <a href="https://gwilczynski95.github.io/QuantumGS/"><img src="https://img.shields.io/badge/🌐-Project%20Page-blue" alt="Project Page"></a>
+</p>
+
+This repository contains the implementation for the paper **QuantumGS**.
 
 ### Abstract
 
