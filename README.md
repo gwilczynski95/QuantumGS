@@ -1,6 +1,6 @@
 # QuantumGS
 
-This repository contains the implementation for the paper **QuantumGS** [Paper Link Placeholder].
+This repository contains the implementation for the paper [**QuantumGS**](https://arxiv.org/abs/2602.05047).
 
 ### Abstract
 
@@ -38,3 +38,17 @@ Just use sh scripts main directory. Make sure to change paths to your own.
 - `run_tandt.sh` - Use it to run experiments on Tanks and Temples dataset
 - `run_mipnerf.sh` - Use it to run experiments on Mip-NeRF360 dataset
 - `run_nerfsynth.sh` - Use it to run experiments on NeRF Synthetic dataset
+
+## Citation
+
+```bibtex
+@misc{wilczynski2026quantumgs,
+      title={QuantumGS: Quantum Encoding Framework for Gaussian Splatting}, 
+      author={Grzegorz Wilczyński and Rafał Tobiasz and Paweł Gora and Marcin Mazur and Przemysław Spurek},
+      year={2026},
+      eprint={2602.05047},
+      archivePrefix={arXiv},
+      primaryClass={quant-ph},
+      url={https://arxiv.org/abs/2602.05047}, 
+}
+```
